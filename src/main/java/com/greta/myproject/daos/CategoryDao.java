@@ -1,6 +1,7 @@
 package com.greta.myproject.daos;
 
 import com.greta.myproject.entities.Category;
+import com.greta.myproject.exceptions.ResourceNotFoundException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -36,7 +37,7 @@ public class CategoryDao {
         return jdbcTemplate.query(sql, categoryRowMapper, category_name)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Category avec le nom : " + category_name + " n'existe pas"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category avec le nom : " + category_name + " n'existe pas"));
 
     }
 
@@ -47,10 +48,10 @@ public class CategoryDao {
         String sql = "INSERT INTO category (category_name) VALUES (?)";
         jdbcTemplate.update(sql, category.getCategory_name());
 
-        String sqlGetCategory_name = "SELECT LAST_INSERT_CATEGORY_NAME()";
-        String category_name = jdbcTemplate.queryForObject(sqlGetCategory_name, String.class);
+        String sqlGetId = "SELECT LAST_INSERT_ID()";
+        Integer id = jdbcTemplate.queryForObject(sqlGetId, Integer.class);
 
-        category.setCategory_name(category_name);
+        category.setId_category(id);
         return category;
     }
 
@@ -59,14 +60,14 @@ public class CategoryDao {
 
     public Category update(String category_name, Category category) {
         if (!categoryExists(category_name)) {
-            throw new RuntimeException("La catégorie avec le nom : " + category_name + " n'existe pas");
+            throw new ResourceNotFoundException("La catégorie avec le nom : " + category_name + " n'existe pas");
         }
 
         String sql = "UPDATE category SET category_name = ? WHERE category_name = ?";
         int rowsAffected = jdbcTemplate.update(sql, category.getCategory_name(), category_name);
 
         if (rowsAffected <= 0) {
-            throw new RuntimeException("Échec de la mise à jour de la catégorie avec le nom : " + category_name);
+            throw new ResourceNotFoundException("Échec de la mise à jour de la catégorie avec le nom : " + category_name);
         }
 
         return this.findByCategory_name(category_name);

@@ -1,6 +1,7 @@
 package com.greta.myproject.daos;
 
 import com.greta.myproject.entities.Film;
+import com.greta.myproject.exceptions.ResourceNotFoundException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -22,7 +23,7 @@ public class FilmDao {
             rs.getString("title_film"),
             rs.getString("image_url"),
             rs.getString("genre"),
-            rs.getInt("released-date"),
+            rs.getInt("released_date"),
             rs.getString("overview")
     );
 
@@ -39,7 +40,7 @@ public class FilmDao {
         return jdbcTemplate.query(sql, filmRowMapper, title_film)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Film avec comme nom : " + title_film + " n'existe pas"));
+                .orElseThrow(() -> new ResourceNotFoundException("Film avec comme nom : " + title_film + " n'existe pas"));
 
     }
 
@@ -49,25 +50,26 @@ public class FilmDao {
         String sql = "INSERT INTO film (title_film, image_url, genre, released_date, overview) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, film.getTitle_film(), film.getImage_url(), film.getGenre(), film.getReleased_date(), film.getOverview());
 
-        String sqlGetTitle_film = "SELECT LAST_INSERT_TITLE_FILM()";
-        String title_film = jdbcTemplate.queryForObject(sqlGetTitle_film, String.class);
+        String sqlGetId = "SELECT LAST_INSERT_ID()";
+        int id = jdbcTemplate.queryForObject(sqlGetId, Integer.class);
 
-        film.setTitle_film(title_film);
+        film.setId_film(id);
         return film;
     }
 
 
 
+
     public Film update(String title_film, Film film) {
         if (!filmExists(title_film)) {
-            throw new RuntimeException("Le film avec le titre : " + title_film + " n'existe pas");
+            throw new ResourceNotFoundException("Le film avec le titre : " + title_film + " n'existe pas");
         }
 
         String sql = "UPDATE film SET genre = ? WHERE title_film = ?";
         int rowsAffected = jdbcTemplate.update(sql, film.getGenre(), title_film);
 
         if (rowsAffected <= 0) {
-            throw new RuntimeException("Échec de la mise à jour du film avec le titre : " + title_film);
+            throw new ResourceNotFoundException("Échec de la mise à jour du film avec le titre : " + title_film);
         }
 
         return this.findByTitle_film(title_film);

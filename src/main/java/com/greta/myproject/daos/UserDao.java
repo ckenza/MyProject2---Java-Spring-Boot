@@ -2,6 +2,7 @@ package com.greta.myproject.daos;
 
 
 import com.greta.myproject.entities.User;
+import com.greta.myproject.exceptions.ResourceNotFoundException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -35,7 +36,7 @@ public class UserDao {
         return jdbcTemplate.query(sql, userRowMapper, email)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("User avec l'email : " + email + " n'existe pas"));
+                .orElseThrow(() -> new ResourceNotFoundException("User avec l'email : " + email + " n'existe pas"));
 
     }
 
@@ -55,18 +56,19 @@ public class UserDao {
 
     public User update(String email, User user) {
         if (!userExists(email)) {
-            throw new RuntimeException("L'utilisateur avec l'EMAIL : " + email + " n'existe pas");
+            throw new ResourceNotFoundException("L'utilisateur avec l'EMAIL : " + email + " n'existe pas");
         }
 
         String sql = "UPDATE user SET email = ?, password = ? WHERE email = ?";
         int rowsAffected = jdbcTemplate.update(sql, user.getEmail(), user.getPassword(), email);
 
         if (rowsAffected <= 0) {
-            throw new RuntimeException("Échec de la mise à jour de l'utilisateur avec l'EMAIL : " + email);
+            throw new ResourceNotFoundException("Échec de la mise à jour de l'utilisateur avec l'EMAIL : " + email);
         }
 
         return this.findByEmail(email);
     }
+
 
     // méthode utilitaire à mettre en bas du fichier
     private boolean userExists(String email) {
