@@ -1,12 +1,31 @@
 package com.greta.myproject.entities;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.URL;
+
 public class Film{
 
     private int id_film;
+
+    @NotBlank(message = "Entrer un titre")
     private String title_film;
+
+    @URL(message = "Ceci n'est pas un lien valable")
+    @NotBlank(message = "Entrer un lien")
     private String image_url;
+
+    @NotBlank(message = "Entrer le genre du film")
     private String genre;
+
+    @NotNull(message = "La date de sortie est obligatoire")
+    @Min(value = 10000000, message = "Entrer une date valide sur 8 chiffres")
+    @Max(value = 99999999, message = "Entrer une date valide sur 8 chiffres")
     private int released_date;
+
+    @NotBlank(message = "Entrer le résumé du film")
     private String overview;
 
 

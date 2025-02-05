@@ -49,12 +49,7 @@ public class FilmDao {
     public Film save(Film film) {
         String sql = "INSERT INTO film (title_film, image_url, genre, released_date, overview) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, film.getTitle_film(), film.getImage_url(), film.getGenre(), film.getReleased_date(), film.getOverview());
-
-        String sqlGetId = "SELECT LAST_INSERT_ID()";
-        int id = jdbcTemplate.queryForObject(sqlGetId, Integer.class);
-
-        film.setId_film(id);
-        return film;
+        return findByTitle_film(film.getTitle_film());
     }
 
 

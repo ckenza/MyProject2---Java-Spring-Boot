@@ -1,6 +1,7 @@
 package com.greta.myproject.daos;
 
 import com.greta.myproject.entities.Category;
+import com.greta.myproject.entities.User;
 import com.greta.myproject.exceptions.ResourceNotFoundException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -47,12 +48,8 @@ public class CategoryDao {
     public Category save(Category category) {
         String sql = "INSERT INTO category (category_name) VALUES (?)";
         jdbcTemplate.update(sql, category.getCategory_name());
+        return findByCategory_name(category.getCategory_name());
 
-        String sqlGetId = "SELECT LAST_INSERT_ID()";
-        Integer id = jdbcTemplate.queryForObject(sqlGetId, Integer.class);
-
-        category.setId_category(id);
-        return category;
     }
 
 

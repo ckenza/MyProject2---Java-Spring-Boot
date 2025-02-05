@@ -3,6 +3,7 @@ package com.greta.myproject.controllers;
 
 import com.greta.myproject.daos.CategoryDao;
 import com.greta.myproject.entities.Category;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class CategoryController {
 
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+    public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) {
         Category createdCategory = categoryDao.save(category);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
     }

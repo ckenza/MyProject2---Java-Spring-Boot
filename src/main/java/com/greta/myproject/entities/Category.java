@@ -1,8 +1,14 @@
 package com.greta.myproject.entities;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class Category {
 
     private int id_category;
+
+    @NotBlank(message = "Entrer le nom de la nouvelle catégorie")
+    @Size(max = 30 , message = "30 caractères maxi mum")
     private String category_name;
 
 

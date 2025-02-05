@@ -45,10 +45,10 @@ public class UserDao {
         String sql = "INSERT INTO user (email, password) VALUES (?, ?)";
         jdbcTemplate.update(sql, user.getEmail(), user.getPassword());
 
-        String sqlGetEmail = "SELECT LAST_INSERT_EMAIL()";
-        String email = jdbcTemplate.queryForObject(sqlGetEmail, String.class);
+        String sqlGetId = "SELECT LAST_INSERT_ID()";
+        int id = jdbcTemplate.queryForObject(sqlGetId, Integer.class);
 
-        user.setEmail(email);
+        user.setIdUser(id);
         return user;
     }
 
