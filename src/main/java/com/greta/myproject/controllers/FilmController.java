@@ -3,6 +3,7 @@ package com.greta.myproject.controllers;
 
 import com.greta.myproject.daos.FilmDao;
 import com.greta.myproject.entities.Film;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,7 @@ public class FilmController {
 
 
     @PostMapping
-    public ResponseEntity<Film> createFilm(@RequestBody Film film) {
+    public ResponseEntity<Film> createFilm(@Valid @RequestBody Film film) {
         Film createdFilm = filmDao.save(film);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdFilm);
     }

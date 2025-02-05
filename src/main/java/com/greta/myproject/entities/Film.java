@@ -1,12 +1,30 @@
 package com.greta.myproject.entities;
 
+import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.URL;
+
+
 public class Film{
 
     private int id_film;
+
+    @NotBlank(message = "Entrer un titre")
     private String title_film;
+
+    @URL(message = "Ce n'est pas un URL")
     private String image_url;
+
+    @NotBlank(message = "Entrer le(s) genre du film")
+    @Size(min= 3, message = "3 caractères minimum")
     private String genre;
+
+    @NotNull(message = "La date de sortie est obligatoire")
+    @Min(value = 10000000, message = "Entrer une date valide sur 8 chiffres")
+    @Max(value = 99999999, message = "Entrer une date valide sur 8 chiffres")
     private int released_date;
+
+
+    @NotBlank(message = "Entrer le résumé du film")
     private String overview;
 
 

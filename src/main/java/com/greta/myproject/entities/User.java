@@ -1,9 +1,20 @@
 package com.greta.myproject.entities;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class User {
 
     private int id_user;
+
+    @NotBlank(message = "Insérer une adresse mail")
+    @Email(message = "le format de l'email n'est pas conforme")
     private String email;
+
+    @NotBlank(message = "Entrer un mot de passe")
+    @Size(min = 5, message = "Le mot de passe doit avoir 5 caractères minimum")
     private String password;
 
 
