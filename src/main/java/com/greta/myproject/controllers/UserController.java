@@ -42,6 +42,17 @@ public class UserController {
     }
 
 
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUser(@RequestBody User user) {
+        User existingUser = userDao.findByEmail(user.getEmail());
+        if (existingUser == null || !existingUser.getPassword().equals(user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email ou mot de passe incorrect");
+        }
+        return ResponseEntity.ok("Connexion réussie");
+    }
+
+
+
     @PutMapping("/{email}")
     public ResponseEntity<User> updateUser(@PathVariable String email, @RequestBody User user) {
         User updatedUser = userDao.update(email, user);
